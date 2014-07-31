@@ -33,7 +33,8 @@ RUN echo "Asia/Tokyo" | tee /etc/timezone ; dpkg-reconfigure --frontend noninter
 run apt-get update && apt-get -y upgrade && apt-get clean
 run apt-get -y install vim wget
 
-run apt-get -y install openjdk-7-jre
+run apt-get -y install colord
+run apt-get -y install openjdk-7-jdk
 
 run wget -qO - http://packages.elasticsearch.org/GPG-KEY-elasticsearch | sudo apt-key add -
 run echo "deb http://packages.elasticsearch.org/elasticsearch/1.3/debian stable main" >> /etc/apt/sources.list && apt-get update && apt-get -y install elasticsearch
