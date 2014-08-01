@@ -33,22 +33,33 @@ RUN echo "Asia/Tokyo" | tee /etc/timezone ; dpkg-reconfigure --frontend noninter
 run apt-get update && apt-get -y upgrade && apt-get clean
 run apt-get -y install vim wget
 
-run apt-get -y install colord
-run apt-get -y install openjdk-7-jdk
+run apt-get -y install software-properties-common && add-apt-repository -y ppa:webupd8team/java && apt-get update
+run echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
+run echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
+run apt-get -y install oracle-java7-installer
 
 run wget -qO - http://packages.elasticsearch.org/GPG-KEY-elasticsearch | sudo apt-key add -
 run echo "deb http://packages.elasticsearch.org/elasticsearch/1.3/debian stable main" >> /etc/apt/sources.list && apt-get update && apt-get -y install elasticsearch
 run sed -i -e "s/^\(MAX_MAP_COUNT=\)[0-9]*/\1/" /etc/init.d/elasticsearch
 
-run apt-get -y install tomcat7
-run sed -i -e 's/#\(JAVA_OPTS="${JAVA_OPTS} -Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=n"\)/\1/' /etc/default/tomcat7
+run cp /usr/share/elasticsearch/bin/elasticsearch.in.sh /usr/share/elasticsearch/bin/elasticsearch.in.sh.orig
+run sed -i -e '$a\JAVA_OPTS="$JAVA_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000"' /usr/share/elasticsearch/bin/elasticsearch.in.sh
 
-run apt-get -y install patch
-add ./tomcat7.patch /tmp/
-run patch /etc/init.d/tomcat7 < /tmp/tomcat7.patch
+run apt-get -y install openssh-server
+run mkdir -p /var/run/sshd
+run sed -i 's/^UsePAM yes/UsePAM no/' /etc/ssh/sshd_config
+run echo "UseDNS no" >> /etc/ssh/sshd_config
+run chmod u+s /usr/bin/sudo
 
-cmd service elasticsearch start && service tomcat7 start && cron -f
+run useradd -m -s /bin/bash sshuser
+run echo "sshuser:sshpass" | chpasswd
+run usermod -G sudo sshuser
+run apt-get -y install language-pack-en
 
+cmd service elasticsearch start && /usr/sbin/sshd -D
+
+# expose for sshd
+expose 22
 # expose for tomcat
 expose 8000 8080
 # expose for elasticsearch
