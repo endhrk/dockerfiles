@@ -51,7 +51,7 @@ run sed -i 's/^UsePAM yes/UsePAM no/' /etc/ssh/sshd_config
 run echo "UseDNS no" >> /etc/ssh/sshd_config
 run chmod u+s /usr/bin/sudo
 
-run useradd -m -s /bin/bash sshuser && sed -e '/^@include /d' /etc/pam.d/chpasswd && echo 'sshuser:sshpass' | chpasswd && usermod -G sudo sshuser
+run useradd -m -s /bin/bash sshuser && sed -i -e '/^@include /d' /etc/pam.d/chpasswd && echo 'sshuser:sshpass' | chpasswd && usermod -G sudo sshuser
 run apt-get -y install language-pack-en
 
 cmd service elasticsearch start && /usr/sbin/sshd -D
