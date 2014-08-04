@@ -58,7 +58,5 @@ cmd service elasticsearch start && /usr/sbin/sshd -D
 
 # expose for sshd
 expose 22
-# expose for tomcat
-expose 8000 8080
 # expose for elasticsearch
 expose 9200 9300
