@@ -58,5 +58,7 @@ cmd service elasticsearch start && /usr/sbin/sshd -D
 
 # expose for sshd
 expose 22
+# expose for elasticsearch debug port
+expose 8000
 # expose for elasticsearch
 expose 9200 9300
