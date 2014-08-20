@@ -42,8 +42,8 @@ run wget -qO - http://packages.elasticsearch.org/GPG-KEY-elasticsearch | sudo ap
 run echo "deb http://packages.elasticsearch.org/elasticsearch/1.3/debian stable main" >> /etc/apt/sources.list && apt-get update && apt-get -y install elasticsearch
 run sed -i -e "s/^\(MAX_MAP_COUNT=\)[0-9]*/\1/" /etc/init.d/elasticsearch
 
-run cp /usr/share/elasticsearch/bin/elasticsearch.in.sh /usr/share/elasticsearch/bin/elasticsearch.in.sh.orig
-run sed -i -e '$a\JAVA_OPTS="$JAVA_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000"' /usr/share/elasticsearch/bin/elasticsearch.in.sh
+#run cp /usr/share/elasticsearch/bin/elasticsearch.in.sh /usr/share/elasticsearch/bin/elasticsearch.in.sh.orig
+#run sed -i -e '$a\JAVA_OPTS="$JAVA_OPTS -Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000"' /usr/share/elasticsearch/bin/elasticsearch.in.sh
 
 run apt-get -y install openssh-server
 run mkdir -p /var/run/sshd
@@ -58,5 +58,7 @@ cmd service elasticsearch start && /usr/sbin/sshd -D
 
 # expose for sshd
 expose 22
+# debug port
+expose 8000
 # expose for elasticsearch
 expose 9200 9300
